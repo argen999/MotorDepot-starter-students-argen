@@ -11,10 +11,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.company.Main.*;
 
-public class ServiceImpl implements Service{
+public class ServiceImpl implements Service {
     List<Truck> trucks = new ArrayList<>(List.of(GSON.fromJson(readTtuck(), Truck[].class)));
     List<Driver> drivers = new ArrayList<>(List.of(GSON.fromJson(readDriver(), Driver[].class)));
 
@@ -30,14 +31,19 @@ public class ServiceImpl implements Service{
     @Override
     public void changeDriver(int truckId, int driverId) throws RuntimeException {
         try {
-            for (Truck t:trucks) {
-                for (Driver d:drivers) {
+            for (Truck t : trucks) {
+                for (Driver d : drivers) {
+                    if (d.getTruckName().equals(t.getTruckName())) {
+                        d.setTruckName("null");
+                    }
                     if (t.getId() == truckId && d.getIdDiver() == driverId &&
-                        t.getState() != State.ROUTE && d.getTruckName() != t.getTruckName() &&
-                        d.getTruckName().equals("")) {
+                            t.getState() != State.ROUTE && d.getTruckName().equals("")) {
 
-                       t.setDriver("    "+d.getName());
-                       d.setTruckName(t.getTruckName());
+                        t.setDriver("    " + d.getName());
+                        d.setTruckName(t.getTruckName());
+                    }
+                    if (d.getTruckName().equals("null")) {
+                        d.setTruckName(" ");
                     }
                 }
             }
@@ -48,12 +54,20 @@ public class ServiceImpl implements Service{
 
     @Override
     public void startDriving(int truckId) {
-        Optional<Truck> optionalTruck = trucks.stream().
-                filter(x -> x.getId() == truckId && x.getState() != State.ROUTE
-                        && !x.getDriver().equals(" ")).findFirst();
+        for (Truck t:trucks) {
+           if (t.getId() == truckId) {
+               if (t.getState()==State.REPAIR) {
+                   Random in = new Random();
+                   int randomState = in.nextInt( 3);
+                   if (randomState == 2) {
+                       t.setState(State.ROUTE);
+                   } else if (randomState == 1){
+                       t.setState(State.BASE);
+                   }
+               } else changeTruckState(truckId);
+           }
 
-        if (optionalTruck.isPresent()) optionalTruck.ifPresent(x -> x.setState(State.ROUTE));
-        else System.out.println("Truck not found or Truck doesn't have Driver!");
+        }
     }
 
     @Override
@@ -68,14 +82,14 @@ public class ServiceImpl implements Service{
 
     @Override
     public void changeTruckState(int truckId) {
-        Optional<Truck> optionalTruck = trucks.stream().
-                filter(x -> x.getId() == truckId && x.getState() != State.BASE
-                        && !x.getDriver().equals(" ")).findFirst();
-
-        if (optionalTruck.isPresent()) optionalTruck.ifPresent(x -> x.setState(State.BASE));
-        else System.out.println("This is Truck under BASE!");
+        for (Truck t : trucks) {
+            if (t.getId() == truckId && !t.getState().equals(State.ROUTE) && !t.getState().equals(State.REPAIR) && !t.getDriver().equals(" ")) {
+                t.setState(State.ROUTE);
+            }
+        }
     }
 }
+
 
 
 
