@@ -29,7 +29,6 @@ public class ServiceImpl implements Service{
 
     @Override
     public void changeDriver(int truckId, int driverId) throws RuntimeException {
-        int counter = 0;
         try {
             for (Truck t:trucks) {
                 for (Driver d:drivers) {
@@ -59,12 +58,22 @@ public class ServiceImpl implements Service{
 
     @Override
     public void startRepair(int truckId) {
-        trucks.get(truckId).setState(State.REPAIR);
+        Optional<Truck> optionalTruck = trucks.stream().
+                filter(x -> x.getId() == truckId && x.getState() != State.REPAIR
+                        && !x.getDriver().equals(" ")).findFirst();
+
+        if (optionalTruck.isPresent()) optionalTruck.ifPresent(x -> x.setState(State.REPAIR));
+        else System.out.println("This is Truck under REPAIR!");
     }
 
     @Override
-    public void changeTruckState() {
+    public void changeTruckState(int truckId) {
+        Optional<Truck> optionalTruck = trucks.stream().
+                filter(x -> x.getId() == truckId && x.getState() != State.BASE
+                        && !x.getDriver().equals(" ")).findFirst();
 
+        if (optionalTruck.isPresent()) optionalTruck.ifPresent(x -> x.setState(State.BASE));
+        else System.out.println("This is Truck under BASE!");
     }
 }
 

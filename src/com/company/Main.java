@@ -36,11 +36,17 @@ public class Main {
                     case "1" -> {
                         myMainDrivers();
                         service.changeDriver(Main.number1, Main.number2);
-                    }
-                    case "2" -> {
-                        System.out.println("Какую машину вы хотите отправить?");
+                    } case "2" -> {
+                        System.out.println("Какую машину вы хотите отправить в путь?");
                         service.startDriving(nN.nextInt());
+                    } case "3" -> {
+                        System.out.println("Какую машину вы хотите отправить на ремонт?");
+                        service.startRepair(nN.nextInt());
+                    } case "4" -> {
+                        System.out.println("Какую машину вы хотите отправить на базу?");
+                        service.changeTruckState(nN.nextInt());
                     }
+
                 }
             }
         } catch (Exception e) {
@@ -53,7 +59,8 @@ public class Main {
     public static void buttons(){
         System.out.println("Press 1 to change Driver\n" +
         "Press 2 to send to the Route\n" +
-        "Press 3 to send to the Repairing\n");
+        "Press 3 to send to the Repairing\n" +
+        "Press 4 to send to the Baseing\n");
     }
 
 
