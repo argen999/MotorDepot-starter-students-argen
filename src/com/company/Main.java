@@ -31,18 +31,20 @@ public class Main {
             while (true) {
                 myMainTrucks();
                 buttons();
-                String knopka = sS.nextLine();
+                int knopka = sS.nextInt();
                 switch (knopka) {
-                    case "1" -> {
+                    case 1 -> {
                         myMainDrivers();
                         service.changeDriver(Main.number1, Main.number2);
-                    } case "2" -> {
+                    } case 2 -> {
                         service.startDriving(Main.number1);
-                    } case "3" -> {
+                    } case 3 -> {
                         service.startRepair(Main.number1);
-                    }  case "4" -> {
-                        service.changeTruckState(Main.number1);
                     }
+                }
+                if (knopka > 3) {
+                    System.out.println("The end!");
+                    break;
                 }
             }
         } catch (Exception e) {
